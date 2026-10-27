@@ -16,7 +16,7 @@ window.SITE = {
     statement: "Understanding people. Building systems that adapt.",
     intro:
       "I work at the intersection of machine learning and human–computer interaction, studying how we look, think, and interact, and how intelligent systems can respond.",
-    now: "PhD in the COIN team · SYMBIOTIK project",
+    now: "PhD in the COIN team",
     links: [
       { label: "Google Scholar", icon: "scholar", url: "https://scholar.google.com/citations?hl=en&user=SHUgxekAAAAJ" },
       { label: "GitHub", icon: "github", url: "https://github.com/prviin" },

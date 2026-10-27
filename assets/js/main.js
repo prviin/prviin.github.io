@@ -161,7 +161,7 @@
 
   /* ---------------- Portrait (photo or drawn monogram) ---------------- */
   const MONOGRAM = `
-    <svg viewBox="0 0 400 500" aria-hidden="true">
+    <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <g fill="none" stroke="var(--accent)" stroke-opacity=".25">
         <ellipse cx="200" cy="250" rx="170" ry="130" transform="rotate(-30 200 250)"/>
         <ellipse cx="200" cy="250" rx="125" ry="92" transform="rotate(-30 200 250)"/>

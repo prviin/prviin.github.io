@@ -159,25 +159,72 @@
     if (b) copy(b.dataset.cite, () => toast("Citation copied"));
   });
 
-  /* ---------------- Portrait (photo or drawn monogram) ---------------- */
-  const MONOGRAM = `
-    <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <g fill="none" stroke="var(--accent)" stroke-opacity=".25">
-        <ellipse cx="200" cy="250" rx="170" ry="130" transform="rotate(-30 200 250)"/>
-        <ellipse cx="200" cy="250" rx="125" ry="92" transform="rotate(-30 200 250)"/>
-        <ellipse cx="200" cy="250" rx="80" ry="56" transform="rotate(-30 200 250)"/>
+  /* ---------------- Portrait: an illustrated avatar whose eyes follow your gaze ---------------- */
+  const AVATAR = `
+    <svg class="avatar" viewBox="0 0 400 400" role="img" aria-label="Illustration of ${esc(S.person.name)}">
+      <rect width="400" height="400" fill="var(--avatar-bg)"/>
+      <g fill="none" stroke="var(--accent)" stroke-opacity=".18">
+        <circle cx="200" cy="190" r="150"/><circle cx="200" cy="190" r="115"/>
       </g>
-      <text x="200" y="290" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="150" font-style="italic" fill="var(--accent)" opacity=".9">pe</text>
-      <path d="M70 410 140 360 235 392 300 330 345 150" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-opacity=".7"/>
-      <g fill="var(--accent)"><circle cx="70" cy="410" r="5"/><circle cx="140" cy="360" r="8"/><circle cx="235" cy="392" r="6"/><circle cx="300" cy="330" r="10"/><circle cx="345" cy="150" r="13"/></g>
+      <!-- ponytail, behind the head -->
+      <path class="ponytail" d="M150 120 C105 135 92 205 108 262 C116 292 112 318 100 338 C140 320 150 280 146 240 C143 200 150 160 170 135 Z" fill="var(--hair)"/>
+      <!-- shoulders & blazer -->
+      <path d="M48 400 C56 342 100 314 160 302 L240 302 C300 314 344 342 352 400 Z" fill="var(--blazer)"/>
+      <path d="M170 302 L230 302 L224 400 L176 400 Z" fill="var(--top)"/>
+      <path d="M160 302 L200 372 L178 400 L140 400 C140 360 146 330 160 302 Z M240 302 L200 372 L222 400 L260 400 C260 360 254 330 240 302 Z" fill="var(--blazer)" stroke="var(--blazer-line)" stroke-width="1.5" stroke-linejoin="round"/>
+      <g stroke="var(--blazer-line)" stroke-width="1" opacity=".5"><path d="M95 400 L110 340 M300 400 L290 340 M120 400 L130 330 M275 400 L268 330"/></g>
+      <!-- neck -->
+      <path d="M178 250 L222 250 L226 306 Q200 322 174 306 Z" fill="var(--skin-shade)"/>
+      <!-- necklace -->
+      <path d="M180 302 Q200 334 220 302" fill="none" stroke="#c9a24a" stroke-width="1.6"/>
+      <path d="M200 324 l3 6 6 1 -4.5 4 1 6 -5.5-3 -5.5 3 1-6 -4.5-4 6-1 Z" fill="#d4ae55"/>
+      <!-- ears -->
+      <ellipse cx="139" cy="188" rx="10" ry="17" fill="var(--skin-shade)"/>
+      <ellipse cx="261" cy="188" rx="10" ry="17" fill="var(--skin-shade)"/>
+      <circle cx="139" cy="206" r="2.5" fill="#d4ae55"/><circle cx="261" cy="206" r="2.5" fill="#d4ae55"/>
+      <!-- face -->
+      <ellipse cx="200" cy="180" rx="61" ry="76" fill="var(--skin)"/>
+      <!-- hair, pulled back -->
+      <path d="M137 188 C126 112 160 86 202 86 C246 86 276 114 263 188 C258 150 248 128 226 118 C206 110 192 112 174 120 C154 130 142 156 137 188 Z" fill="var(--hair)"/>
+      <path d="M202 92 C186 100 176 112 172 124" fill="none" stroke="var(--hair-light)" stroke-width="2" opacity=".5"/>
+      <!-- brows -->
+      <g fill="none" stroke="var(--hair)" stroke-width="4" stroke-linecap="round">
+        <path d="M160 156 Q175 148 190 155"/><path d="M210 155 Q225 148 240 156"/>
+      </g>
+      <!-- eyes (blink + follow) -->
+      <g class="eyes">
+        <ellipse cx="176" cy="180" rx="9" ry="6.5" fill="#fff"/>
+        <ellipse cx="224" cy="180" rx="9" ry="6.5" fill="#fff"/>
+        <g class="pupils" fill="#2b211e">
+          <circle cx="176" cy="180" r="4.6"/><circle cx="224" cy="180" r="4.6"/>
+          <circle cx="177.6" cy="178.4" r="1.3" fill="#fff"/><circle cx="225.6" cy="178.4" r="1.3" fill="#fff"/>
+        </g>
+      </g>
+      <!-- clear round glasses -->
+      <g fill="rgba(255,255,255,.14)" stroke="#a9a29a" stroke-width="2.6">
+        <rect x="153" y="164" width="45" height="35" rx="15"/><rect x="202" y="164" width="45" height="35" rx="15"/>
+      </g>
+      <path d="M198 178 Q200 174 202 178 M153 176 L141 178 M247 176 L259 178" fill="none" stroke="#a9a29a" stroke-width="2.4"/>
+      <!-- nose, cheeks, smile -->
+      <path d="M200 192 Q195 207 199 212 Q203 213 206 210" fill="none" stroke="var(--skin-line)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="160" cy="214" r="11" fill="#e8908f" opacity=".22"/><circle cx="240" cy="214" r="11" fill="#e8908f" opacity=".22"/>
+      <path d="M185 228 Q200 240 215 228 Q200 234 185 228 Z" fill="#b5636b" stroke="#b5636b" stroke-width="2" stroke-linejoin="round"/>
     </svg>`;
 
   function portraitHTML() {
-    return `
-      <div class="portrait-frame">
-        <div class="monogram">${MONOGRAM}</div>
-        <img src="${esc(S.person.photo)}" alt="Portrait of ${esc(S.person.name)}" onerror="this.remove()">
-      </div>`;
+    return `<div class="portrait-frame">${AVATAR}</div>`;
+  }
+
+  // Moves the avatar's pupils toward a point given in viewport coordinates.
+  function lookAt(x, y) {
+    const pupils = $(".avatar .pupils");
+    if (!pupils) return;
+    const svg = pupils.ownerSVGElement.getBoundingClientRect();
+    const scale = svg.width / 400;
+    const ex = svg.left + 200 * scale, ey = svg.top + 180 * scale;
+    const dx = x - ex, dy = y - ey, d = Math.hypot(dx, dy) || 1;
+    const reach = Math.min(d / (120 * scale), 1) * 3.6;
+    pupils.setAttribute("transform", `translate(${(dx / d * reach).toFixed(2)} ${(dy / d * reach * .7).toFixed(2)})`);
   }
 
   /* ---------------- Gaze canvas (home) ---------------- */
@@ -185,6 +232,7 @@
   // saccades (lines), like an eye-tracking scanpath. Without a mouse, a
   // synthetic scanpath wanders over the hero instead.
   function startGaze(canvas) {
+    window.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") lookAt(e.clientX, e.clientY); }, { passive: true });
     const ctx = canvas.getContext("2d");
     const hero = canvas.parentElement;
     let w = 0, h = 0, dpr = 1;
@@ -208,6 +256,8 @@
     function fixate(x, y, now) {
       if (current && Math.hypot(current.x - x, current.y - y) < 40) return;
       current = { x, y, start: now, r: 4 };
+      const hr = hero.getBoundingClientRect();
+      lookAt(hr.left + x, hr.top + y);
       fixations.push(current);
       if (fixations.length > MAX) fixations.shift();
     }
@@ -289,7 +339,7 @@
       $("#portrait").innerHTML = `
         ${portraitHTML()}
         <div class="portrait-tag"><span class="pulse" aria-hidden="true"></span><span>${esc(P.now)}</span></div>
-        <p class="portrait-caption">your cursor path, recorded live</p>`;
+        <p class="portrait-caption">I look where you look</p>`;
 
       $("#home-news").innerHTML = S.news.slice(0, 4).map((n) =>
         `<li><span class="when">${esc(n.date)}</span><p>${n.text}${n.link ? ` <a href="${esc(n.link)}">${arrow}</a>` : ""}</p></li>`).join("");

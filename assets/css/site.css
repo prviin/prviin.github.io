@@ -205,9 +205,15 @@ section.block { padding: clamp(40px, 6vw, 72px) 0; border-top: 1px solid var(--l
   animation: spin 60s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.portrait-frame img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; }
-.portrait-frame .monogram { position: absolute; inset: 0; display: grid; place-items: center; }
-.portrait-frame .monogram svg { width: 100%; height: 100%; }
+.avatar { display: block; width: 100%; height: 100%;
+  --skin: #ecc6a8; --skin-shade: #ddaf8f; --skin-line: #c08a6c;
+  --hair: #2a1d1a; --hair-light: #5a4038;
+  --blazer: #e6d8c2; --blazer-line: #c8b69a; --top: #fbfaf7; --avatar-bg: var(--plum); }
+:root[data-theme="dark"] .avatar { --avatar-bg: #6b4b5a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .avatar { --avatar-bg: #6b4b5a; } }
+.avatar .pupils { transition: transform .18s ease-out; }
+.avatar .eyes { transform-box: fill-box; transform-origin: center; animation: blink 5.5s infinite; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
 .portrait-tag {
   position: absolute; left: -10px; bottom: 56px; z-index: 2; padding: 10px 14px; border-radius: 14px;
   background: var(--paper); box-shadow: var(--shadow); font-size: 12px; max-width: 250px; display: flex; gap: 10px; align-items: center;

@@ -11,8 +11,6 @@ window.SITE = {
     name: "Parvin Emami",
     role: "PhD researcher · University of Luxembourg",
     email: "parvin.emami@uni.lu",
-    // Put your photo at this path. Until then a drawn monogram is shown.
-    photo: "assets/img/portrait.jpg",
     statement: "Understanding people. Building systems that adapt.",
     intro:
       "I work at the intersection of machine learning and human–computer interaction, studying how we look, think, and interact, and how intelligent systems can respond.",

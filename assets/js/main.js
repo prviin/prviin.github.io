@@ -174,18 +174,14 @@
       </g>
       <ellipse cx="149" cy="124" rx="8" ry="10" fill="#ef8fab" transform="rotate(-25 149 124)"/>
       </g>
-      <!-- cardigan & top -->
-      <path d="M68 400 C76 344 118 316 168 306 L232 306 C282 316 324 344 332 400 Z" fill="var(--blazer)"/>
-      <path d="M176 306 L224 306 L220 400 L180 400 Z" fill="var(--top)"/>
-      <path d="M178 330 L180 400 M222 330 L220 400" stroke="var(--blazer-line)" stroke-width="2"/>
-      <circle cx="186" cy="352" r="3" fill="var(--blazer-line)"/><circle cx="186" cy="378" r="3" fill="var(--blazer-line)"/>
-      <!-- neck -->
-      <path d="M185 258 L215 258 L218 308 Q200 316 182 308 Z" fill="var(--skin-shade)"/>
-      <!-- necklace with a little heart -->
-      <path d="M186 312 Q200 338 214 312" fill="none" stroke="#d4ae55" stroke-width="1.5"/>
-      <path d="M200 340 c-3-4-9-1-5 4 l5 4.5 5-4.5 c4-5-2-8-5-4 Z" fill="#d4ae55"/>
-      <!-- round white collar -->
-      <path d="M200 310 C188 330 166 330 158 312 C170 304 188 303 200 310 Z M200 310 C212 330 234 330 242 312 C230 304 212 303 200 310 Z" fill="var(--top)" stroke="var(--collar-line)" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- simple top with a round neckline -->
+      <path d="M68 400 C76 344 118 316 168 306 L232 306 C282 316 324 344 332 400 Z" fill="var(--top)"/>
+      <path d="M100 400 C104 370 116 350 132 338 M300 400 C296 370 284 350 268 338" fill="none" stroke="var(--top-line)" stroke-width="2" stroke-linecap="round"/>
+      <!-- neck & neckline -->
+      <path d="M185 258 L215 258 L218 306 C232 307 238 308 240 310 Q200 352 160 310 C162 308 168 307 182 306 Z" fill="var(--skin-shade)"/>
+      <!-- fine necklace with a little heart -->
+      <path d="M184 312 Q200 334 216 312" fill="none" stroke="#d4ae55" stroke-width="1.4"/>
+      <path d="M200 336 c-3-4-9-1-5 4 l5 4.5 5-4.5 c4-5-2-8-5-4 Z" fill="#d4ae55"/>
       <g transform="translate(200 202) scale(1.08) translate(-200 -180)">
       <!-- ears -->
       <ellipse cx="131" cy="182" rx="9" ry="14" fill="var(--skin-shade)"/>
@@ -221,8 +217,8 @@
       <path d="M195 180 Q200 175 205 180 M153 178 L132 175 M247 178 L268 175" fill="none" stroke="#b8b0a8" stroke-width="2.4" stroke-linecap="round"/>
       <!-- tiny nose, rosy cheeks, smile -->
       <path d="M197 203 Q200 207 203 203" fill="none" stroke="var(--skin-line)" stroke-width="2" stroke-linecap="round"/>
-      <ellipse cx="150" cy="210" rx="13" ry="8" fill="#f28ea2" opacity=".38"/>
-      <ellipse cx="250" cy="210" rx="13" ry="8" fill="#f28ea2" opacity=".38"/>
+      <ellipse cx="157" cy="212" rx="11" ry="7" fill="#f28ea2" opacity=".38"/>
+      <ellipse cx="243" cy="212" rx="11" ry="7" fill="#f28ea2" opacity=".38"/>
       <path d="M187 216 Q200 232 213 216 Q200 221 187 216 Z" fill="#c45a6c" stroke="#c45a6c" stroke-width="2" stroke-linejoin="round"/>
       </g>
     </svg>`;

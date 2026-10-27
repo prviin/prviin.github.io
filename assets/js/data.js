@@ -21,8 +21,7 @@ window.SITE = {
       { label: "Google Scholar", icon: "scholar", url: "https://scholar.google.com/citations?hl=en&user=SHUgxekAAAAJ" },
       { label: "GitHub", icon: "github", url: "https://github.com/prviin" },
       { label: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/in/parvin-emami-207001144/" },
-      // Add your X/Twitter profile URL below; the icon appears once it is filled in.
-      { label: "X (Twitter)", icon: "x", url: "" },
+      { label: "X (Twitter)", icon: "x", url: "https://x.com/ParvinEmami" },
     ],
     interests: [
       { label: "Eye tracking", page: "projects.html#workload" },

@@ -264,7 +264,10 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     resize();
-    window.addEventListener("resize", resize);
+    // Re-measure whenever the hero changes size (fonts loading, mobile address bar, rotation),
+    // otherwise the canvas is stretched and fixations drift away from the finger.
+    if ("ResizeObserver" in window) new ResizeObserver(resize).observe(hero);
+    else window.addEventListener("resize", resize);
 
     const color = () => getComputedStyle(document.documentElement).getPropertyValue("--gaze").trim() || "rgba(122,59,90,.9)";
     const soft = () => getComputedStyle(document.documentElement).getPropertyValue("--gaze-soft").trim() || "rgba(122,59,90,.14)";

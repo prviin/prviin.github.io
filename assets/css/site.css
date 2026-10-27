@@ -214,8 +214,9 @@ section.block { padding: clamp(40px, 6vw, 72px) 0; border-top: 1px solid var(--l
 .avatar .pupils { transition: transform .18s ease-out; }
 .avatar .eyes { transform-box: fill-box; transform-origin: center; animation: blink 5.5s infinite; }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+.portrait-wrap { position: relative; }
 .portrait-tag {
-  position: absolute; left: -10px; bottom: 56px; z-index: 2; padding: 10px 14px; border-radius: 14px;
+  position: absolute; left: -10px; bottom: 6%; z-index: 2; padding: 10px 14px; border-radius: 14px;
   background: var(--paper); box-shadow: var(--shadow); font-size: 12px; max-width: 250px; display: flex; gap: 10px; align-items: center;
 }
 .portrait-tag .pulse { width: 8px; height: 8px; border-radius: 50%; background: #5b8c5a; flex: none; box-shadow: 0 0 0 0 rgba(91, 140, 90, .6); animation: pulse 2.4s infinite; }
@@ -346,6 +347,42 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); color: in
 .timeline h3 { font: 400 1.3rem/1.25 var(--serif); margin: 4px 0 2px; }
 .timeline p { font-size: 16px; }
 
+/* ---------- Webcam eye tracking ---------- */
+.eyetrack-btn {
+  display: flex; align-items: center; gap: 8px; margin: 12px auto 0; padding: 7px 14px; border-radius: 999px;
+  border: 1px dashed var(--accent); background: none; color: var(--accent); font: 12px var(--mono); cursor: pointer;
+  width: max-content; white-space: nowrap;
+}
+.eyetrack-btn:hover { background: var(--accent-soft); }
+.eyetrack-btn[hidden] { display: none; }
+.rec { width: 8px; height: 8px; border-radius: 50%; background: #d0453b; flex: none; }
+.et-overlay {
+  position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.et-card { width: min(520px, 100%); background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: clamp(22px, 5vw, 36px); box-shadow: var(--shadow); }
+.et-card h2 { font: 400 clamp(1.6rem, 4vw, 2.1rem)/1.2 var(--serif); margin: 12px 0; }
+.et-card h2 em { color: var(--accent); }
+.et-card ul { margin-top: 14px; display: grid; gap: 8px; }
+.et-card li { padding-left: 18px; position: relative; font-size: 15px; color: var(--muted); }
+.et-card li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.et-overlay.calibrating { display: block; background: color-mix(in srgb, var(--paper) 94%, transparent); }
+.et-instructions { position: absolute; left: 50%; bottom: 3%; transform: translateX(-50%); width: max-content; max-width: 70%; text-align: center; font-size: 14px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+.et-overlay.calibrating .et-instructions { bottom: auto; top: calc(64px + 200px); }
+.et-dot {
+  --fill: 0; position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; cursor: pointer; padding: 0;
+  border: 2px solid var(--accent); background: radial-gradient(circle, var(--accent) calc(var(--fill) * 70%), transparent calc(var(--fill) * 70% + 1%));
+  animation: et-pulse 1.6s infinite;
+}
+.et-dot:disabled { background: var(--accent); opacity: .35; animation: none; cursor: default; }
+@keyframes et-pulse { 50% { box-shadow: 0 0 0 8px var(--gaze-soft); } }
+#webgazerVideoContainer { top: 64px !important; left: 50% !important; transform: translateX(-50%); z-index: 95 !important; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.et-status {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 70; display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 16px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 13px; white-space: nowrap;
+}
+.et-status .rec { animation: pulse 2s infinite; }
+
 /* ---------- Placeholders ---------- */
 .placeholder { outline: 1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 4px; border-radius: 6px; }
 .ph-badge { font: 500 9.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); border: 1px dashed var(--accent); border-radius: 4px; padding: 1px 6px; margin-left: 8px; vertical-align: 2px; white-space: nowrap; }
@@ -363,7 +400,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); color: in
 .site-footer a { text-decoration: none; }
 
 /* ---------- Toast ---------- */
-.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 999px; font-size: 13px; opacity: 0; transition: .25s; z-index: 80; pointer-events: none; }
+.toast { position: fixed; left: 50%; bottom: 76px; transform: translate(-50%, 20px); background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 999px; font-size: 13px; opacity: 0; transition: .25s; z-index: 80; pointer-events: none; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------- Responsive ---------- */
@@ -376,7 +413,8 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); color: in
   .hero { min-height: auto; padding-top: 28px; }
   .hero-grid { grid-template-columns: 1fr; }
   .portrait { order: -1; width: min(220px, 62%); justify-self: start; margin: 22px 0 0 22px; }
-  .portrait-tag { left: auto; right: -12px; bottom: 16px; max-width: 200px; }
+  .portrait-tag { left: auto; right: -40px; bottom: 2%; max-width: 200px; }
+  .eyetrack-btn { margin-left: 0; }
   .gaze-hint { display: none; }
   .grid-2 { grid-template-columns: 1fr; }
   .year-group { grid-template-columns: 1fr; gap: 6px; }

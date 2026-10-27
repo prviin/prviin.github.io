@@ -228,18 +228,22 @@
   }
 
   /* ---------------- Gaze canvas (home) ---------------- */
-  // Draws fixations (circles that grow while the pointer dwells) joined by
-  // saccades (lines), like an eye-tracking scanpath. Without a mouse, a
-  // synthetic scanpath wanders over the hero instead.
+  // Draws fixations (circles that grow while the gaze dwells) joined by
+  // saccades (lines), like an eye-tracking scanpath. The gaze comes from one of:
+  //   mouse  - the cursor (desktop)
+  //   touch  - a tap places a fixation; the auto path resumes a few seconds later
+  //   auto   - a synthetic scanpath when there is no mouse
+  //   camera - real webcam eye tracking (WebGazer), after calibration
   function startGaze(canvas) {
-    window.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") lookAt(e.clientX, e.clientY); }, { passive: true });
     const ctx = canvas.getContext("2d");
     const hero = canvas.parentElement;
     let w = 0, h = 0, dpr = 1;
     const fixations = [];
     let current = null;
-    let pointer = null, lastMove = 0;
     const MAX = 9;
+    const hasMouse = window.matchMedia("(hover: hover)").matches;
+    let source = hasMouse ? "mouse" : "auto";
+    let target = null, lastMove = 0, touchUntil = 0;
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -253,8 +257,8 @@
     const color = () => getComputedStyle(document.documentElement).getPropertyValue("--gaze").trim() || "rgba(122,59,90,.9)";
     const soft = () => getComputedStyle(document.documentElement).getPropertyValue("--gaze-soft").trim() || "rgba(122,59,90,.14)";
 
-    function fixate(x, y, now) {
-      if (current && Math.hypot(current.x - x, current.y - y) < 40) return;
+    function fixate(x, y, now, minDist = 40) {
+      if (current && Math.hypot(current.x - x, current.y - y) < minDist) return;
       current = { x, y, start: now, r: 4 };
       const hr = hero.getBoundingClientRect();
       lookAt(hr.left + x, hr.top + y);
@@ -262,30 +266,42 @@
       if (fixations.length > MAX) fixations.shift();
     }
 
-    // Pointer-driven mode
-    let synthetic = !window.matchMedia("(hover: hover)").matches;
-    hero.addEventListener("pointermove", (e) => {
-      if (e.pointerType !== "mouse") return;
-      synthetic = false;
+    // Records a gaze sample given in viewport coordinates.
+    function sample(clientX, clientY) {
       const r = hero.getBoundingClientRect();
-      pointer = { x: e.clientX - r.left, y: e.clientY - r.top };
+      target = { x: clientX - r.left, y: clientY - r.top };
       lastMove = performance.now();
-    });
-    hero.addEventListener("pointerleave", () => { pointer = null; });
+    }
 
-    // Synthetic mode: jump between random points with human-ish dwell times
+    window.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse" || source === "camera") return;
+      source = "mouse";
+      lookAt(e.clientX, e.clientY);
+      sample(e.clientX, e.clientY);
+    }, { passive: true });
+    hero.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse" && source === "mouse") target = null; });
+
+    hero.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" || source === "camera") return;
+      const now = performance.now();
+      sample(e.clientX, e.clientY);
+      fixate(target.x, target.y, now, 1);
+      touchUntil = now + 4000;
+    }, { passive: true });
+
+    // Synthetic scanpath: jump between random points with human-ish dwell times
     let nextJump = 0;
-    function syntheticStep(now) {
+    function autoStep(now) {
       if (now < nextJump) return;
-      const x = w * (0.08 + Math.random() * 0.84);
-      const y = h * (0.12 + Math.random() * 0.76);
-      fixate(x, y, now);
+      fixate(w * (0.08 + Math.random() * 0.84), h * (0.12 + Math.random() * 0.76), now);
       nextJump = now + 450 + Math.random() * 900;
     }
 
     function frame(now) {
-      if (synthetic) syntheticStep(now);
-      else if (pointer && now - lastMove > 90) fixate(pointer.x, pointer.y, now);
+      if (source === "camera") { if (target) fixate(target.x, target.y, now, 80); }
+      else if (now < touchUntil) { /* hold the tapped fixation */ }
+      else if (source === "mouse") { if (target && now - lastMove > 90) fixate(target.x, target.y, now); }
+      else autoStep(now);
 
       if (current) current.r = Math.min(4 + (now - current.start) / 28, 46);
 
@@ -317,6 +333,154 @@
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+
+    return {
+      // Smoothed webcam gaze estimates arrive here while camera mode is on.
+      cameraSample(x, y) { lookAt(x, y); sample(x, y); },
+      setCamera(on) {
+        source = on ? "camera" : hasMouse ? "mouse" : "auto";
+        target = null;
+      },
+    };
+  }
+
+  /* ---------------- Real eye tracking via the webcam (opt-in) ---------------- */
+  // Uses WebGazer (https://webgazer.cs.brown.edu), loaded only when the visitor
+  // asks for it. Everything runs in the browser; no video or data leaves the
+  // device and nothing is stored.
+  const WEBGAZER_BASE = "https://cdn.jsdelivr.net/npm/webgazer@3.5.3/dist";
+  const WEBGAZER_SRC = WEBGAZER_BASE + "/webgazer.js";
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = src; s.async = true;
+      s.onload = resolve; s.onerror = () => reject(new Error("load failed"));
+      document.head.appendChild(s);
+    });
+  }
+
+  function setupEyeTracking(gaze) {
+    const btn = $("#eyetrack-btn");
+    if (!btn || !gaze || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { if (btn) btn.hidden = true; return; }
+
+    let running = false, calibrated = false, smooth = null, used = false;
+
+    function overlay(html) {
+      const el = document.createElement("div");
+      el.className = "et-overlay";
+      el.setAttribute("role", "dialog");
+      el.setAttribute("aria-modal", "true");
+      el.innerHTML = html;
+      document.body.appendChild(el);
+      return el;
+    }
+
+    function stop() {
+      running = false; calibrated = false; smooth = null;
+      // end() alone leaves the camera on; stopVideo() releases it.
+      try { window.webgazer.stopVideo(); } catch (e) { /* camera never started */ }
+      try { window.webgazer.end(); } catch (e) { /* not started */ }
+      document.querySelectorAll(".et-overlay, .et-status").forEach((el) => el.remove());
+      gaze.setCamera(false);
+      btn.hidden = false;
+    }
+
+    function consent() {
+      const dlg = overlay(`
+        <div class="et-card">
+          <p class="eyebrow"><span class="fix" aria-hidden="true"></span>Real eye tracking</p>
+          <h2>Let the page follow <em>your eyes.</em></h2>
+          <p>This uses your camera to estimate where you look, the way eye-tracking research does, just much less precisely.</p>
+          <ul>
+            <li>Everything runs in your browser. Video never leaves your device and nothing is saved. (The face model, about 10 MB, is downloaded once from a public CDN.)</li>
+            <li>First a short calibration: look at each dot and click or tap it 3 times.</li>
+            <li>Works best on a laptop, with your face well lit.</li>
+          </ul>
+          <div class="cta-row"><button class="btn" data-et="start">Turn on camera</button><button class="btn ghost" data-et="cancel">Not now</button></div>
+        </div>`);
+      $("[data-et=start]", dlg).focus();
+      dlg.addEventListener("click", (e) => {
+        const a = e.target.closest("[data-et]");
+        if (!a) return;
+        dlg.remove();
+        if (a.dataset.et === "start") start();
+      });
+    }
+
+    async function start() {
+      // WebGazer cannot be restarted cleanly after end(), so a second run starts from a fresh page.
+      if (used) { location.hash = "eye-tracking"; location.reload(); return; }
+      used = true;
+      running = true;
+      btn.hidden = true;
+      toast("Loading eye tracker…");
+      try {
+        if (!window.webgazer) await loadScript(WEBGAZER_SRC);
+        const wg = window.webgazer;
+        wg.saveDataAcrossSessions(false);
+        wg.params.showVideoPreview = true;
+        wg.params.videoViewerWidth = 240;
+        wg.params.videoViewerHeight = 180;
+        wg.params.faceMeshSolutionPath = WEBGAZER_BASE + "/mediapipe/face_mesh";
+        await wg.setRegression("ridge")
+          .setGazeListener((data) => {
+            if (!data || !calibrated || !running) return;
+            smooth = smooth ? { x: smooth.x * 0.8 + data.x * 0.2, y: smooth.y * 0.8 + data.y * 0.2 } : { x: data.x, y: data.y };
+            gaze.cameraSample(smooth.x, smooth.y);
+          })
+          .begin();
+        wg.showPredictionPoints(false);
+        if (!running) return stop(); // cancelled while loading
+        calibrate();
+      } catch (e) {
+        stop();
+        toast("Camera not available");
+      }
+    }
+
+    function calibrate() {
+      // Dots avoid the camera preview, which sits at the top centre.
+      const spots = [[8, 10], [92, 10], [8, 38], [50, 38], [92, 38], [8, 64], [50, 64], [92, 64], [8, 90], [50, 90], [92, 90]];
+      const cal = overlay(`
+        <p class="et-instructions"><span>Look at each dot and click it <strong>3 times</strong>.</span> <button class="pill" data-et="cancel">Cancel</button></p>
+        ${spots.map(([x, y], i) => `<button class="et-dot" style="left:${x}%;top:${y}%" data-hits="0" aria-label="Calibration point ${i + 1}"></button>`).join("")}`);
+      cal.classList.add("calibrating");
+      let done = 0;
+      cal.addEventListener("click", (e) => {
+        if (e.target.closest("[data-et=cancel]")) return stop();
+        const dot = e.target.closest(".et-dot");
+        if (!dot || dot.disabled) return;
+        const hits = +dot.dataset.hits + 1;
+        dot.dataset.hits = hits;
+        dot.style.setProperty("--fill", hits / 3);
+        if (hits >= 3) { dot.disabled = true; done++; }
+        if (done === spots.length) finish(cal);
+      });
+    }
+
+    function finish(cal) {
+      cal.remove();
+      calibrated = true;
+      const wg = window.webgazer;
+      wg.showVideoPreview(false).showFaceOverlay(false).showFaceFeedbackBox(false);
+      gaze.setCamera(true);
+      const status = document.createElement("div");
+      status.className = "et-status";
+      status.innerHTML = `<span class="rec" aria-hidden="true"></span>Eye tracking on <button class="pill" data-et="stop">Stop camera</button>`;
+      document.body.appendChild(status);
+      $("[data-et=stop]", status).addEventListener("click", stop);
+      toast("Calibrated. Now just look around");
+    }
+
+    btn.addEventListener("click", consent);
+    if (location.hash === "#eye-tracking") { history.replaceState(null, "", location.pathname); consent(); }
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      const dlg = $(".et-overlay");
+      if (dlg && !dlg.classList.contains("calibrating")) dlg.remove();
+      else if (dlg) stop();
+    });
   }
 
   /* ---------------- Page renderers ---------------- */
@@ -337,9 +501,12 @@
         <div class="socials">${P.links.filter((l) => l.url).map((l) => `<a href="${esc(l.url)}">${esc(l.label)} ${arrow}</a>`).join("")}</div>`;
 
       $("#portrait").innerHTML = `
-        ${portraitHTML()}
-        <div class="portrait-tag"><span class="pulse" aria-hidden="true"></span><span>${esc(P.now)}</span></div>
-        <p class="portrait-caption">I look where you look</p>`;
+        <div class="portrait-wrap">
+          ${portraitHTML()}
+          <div class="portrait-tag"><span class="pulse" aria-hidden="true"></span><span>${esc(P.now)}</span></div>
+        </div>
+        <p class="portrait-caption">I look where you look</p>
+        <button class="eyetrack-btn" id="eyetrack-btn"><span class="rec" aria-hidden="true"></span>Try real eye tracking with your camera</button>`;
 
       $("#home-news").innerHTML = S.news.slice(0, 4).map((n) =>
         `<li><span class="when">${esc(n.date)}</span><p>${n.text}${n.link ? ` <a href="${esc(n.link)}">${arrow}</a>` : ""}</p></li>`).join("");
@@ -355,7 +522,8 @@
       $("#home-pubs").innerHTML = S.publications.filter((p) => p.selected).map(pubHTML).join("");
 
       const canvas = $("#gaze-canvas");
-      if (canvas && !reduceMotion) startGaze(canvas);
+      if (canvas && !reduceMotion) setupEyeTracking(startGaze(canvas));
+      else { const b = $("#eyetrack-btn"); if (b) b.hidden = true; }
     },
 
     projects() {

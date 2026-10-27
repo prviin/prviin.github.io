@@ -207,8 +207,10 @@ section.block { padding: clamp(40px, 6vw, 72px) 0; border-top: 1px solid var(--l
 @keyframes spin { to { transform: rotate(360deg); } }
 .avatar { display: block; width: 100%; height: 100%;
   --skin: #ecc6a8; --skin-shade: #ddaf8f; --skin-line: #c08a6c;
-  --hair: #2a1d1a; --hair-light: #5a4038;
-  --blazer: #e6d8c2; --blazer-line: #c8b69a; --top: #fbfaf7; --avatar-bg: var(--plum); }
+  --hair: #2a1d1a; --hair-light: #6a4c42;
+  --blazer: #5e968f; --blazer-line: #477a74; --top: #fbfaf7; --collar-line: #dfe3e1; --avatar-bg: var(--plum); }
+.avatar .ponytail { transform-box: view-box; transform-origin: 150px 122px; animation: sway 3.6s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-4deg); } to { transform: rotate(3deg); } }
 :root[data-theme="dark"] .avatar { --avatar-bg: #6b4b5a; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .avatar { --avatar-bg: #6b4b5a; } }
 .avatar .pupils { transition: transform .18s ease-out; }

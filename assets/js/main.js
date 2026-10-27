@@ -166,49 +166,65 @@
       <g fill="none" stroke="var(--accent)" stroke-opacity=".18">
         <circle cx="200" cy="190" r="150"/><circle cx="200" cy="190" r="115"/>
       </g>
-      <!-- ponytail, behind the head -->
-      <path class="ponytail" d="M150 120 C105 135 92 205 108 262 C116 292 112 318 100 338 C140 320 150 280 146 240 C143 200 150 160 170 135 Z" fill="var(--hair)"/>
-      <!-- shoulders & blazer -->
-      <path d="M48 400 C56 342 100 314 160 302 L240 302 C300 314 344 342 352 400 Z" fill="var(--blazer)"/>
-      <path d="M170 302 L230 302 L224 400 L176 400 Z" fill="var(--top)"/>
-      <path d="M160 302 L200 372 L178 400 L140 400 C140 360 146 330 160 302 Z M240 302 L200 372 L222 400 L260 400 C260 360 254 330 240 302 Z" fill="var(--blazer)" stroke="var(--blazer-line)" stroke-width="1.5" stroke-linejoin="round"/>
-      <g stroke="var(--blazer-line)" stroke-width="1" opacity=".5"><path d="M95 400 L110 340 M300 400 L290 340 M120 400 L130 330 M275 400 L268 330"/></g>
-      <!-- neck -->
-      <path d="M178 250 L222 250 L226 306 Q200 322 174 306 Z" fill="var(--skin-shade)"/>
-      <!-- necklace -->
-      <path d="M180 302 Q200 334 220 302" fill="none" stroke="#c9a24a" stroke-width="1.6"/>
-      <path d="M200 324 l3 6 6 1 -4.5 4 1 6 -5.5-3 -5.5 3 1-6 -4.5-4 6-1 Z" fill="#d4ae55"/>
-      <!-- ears -->
-      <ellipse cx="139" cy="188" rx="10" ry="17" fill="var(--skin-shade)"/>
-      <ellipse cx="261" cy="188" rx="10" ry="17" fill="var(--skin-shade)"/>
-      <circle cx="139" cy="206" r="2.5" fill="#d4ae55"/><circle cx="261" cy="206" r="2.5" fill="#d4ae55"/>
-      <!-- face -->
-      <ellipse cx="200" cy="180" rx="61" ry="76" fill="var(--skin)"/>
-      <!-- hair, pulled back -->
-      <path d="M137 188 C126 112 160 86 202 86 C246 86 276 114 263 188 C258 150 248 128 226 118 C206 110 192 112 174 120 C154 130 142 156 137 188 Z" fill="var(--hair)"/>
-      <path d="M202 92 C186 100 176 112 172 124" fill="none" stroke="var(--hair-light)" stroke-width="2" opacity=".5"/>
-      <!-- brows -->
-      <g fill="none" stroke="var(--hair)" stroke-width="4" stroke-linecap="round">
-        <path d="M160 156 Q175 148 190 155"/><path d="M210 155 Q225 148 240 156"/>
+      <g transform="translate(200 202) scale(1.08) translate(-200 -180)">
+      <!-- ponytail (sways), with a hair tie -->
+      <g class="ponytail">
+        <path d="M146 118 C100 126 84 196 98 248 C106 278 100 304 90 324 C132 312 148 274 144 236 C141 200 148 160 168 132 Z" fill="var(--hair)"/>
+        <path d="M120 170 C112 200 112 232 118 258" fill="none" stroke="var(--hair-light)" stroke-width="2" opacity=".5"/>
       </g>
-      <!-- eyes (blink + follow) -->
+      <ellipse cx="149" cy="124" rx="8" ry="10" fill="#ef8fab" transform="rotate(-25 149 124)"/>
+      </g>
+      <!-- cardigan & top -->
+      <path d="M68 400 C76 344 118 316 168 306 L232 306 C282 316 324 344 332 400 Z" fill="var(--blazer)"/>
+      <path d="M176 306 L224 306 L220 400 L180 400 Z" fill="var(--top)"/>
+      <path d="M178 330 L180 400 M222 330 L220 400" stroke="var(--blazer-line)" stroke-width="2"/>
+      <circle cx="186" cy="352" r="3" fill="var(--blazer-line)"/><circle cx="186" cy="378" r="3" fill="var(--blazer-line)"/>
+      <!-- neck -->
+      <path d="M185 258 L215 258 L218 308 Q200 316 182 308 Z" fill="var(--skin-shade)"/>
+      <!-- necklace with a little heart -->
+      <path d="M186 312 Q200 338 214 312" fill="none" stroke="#d4ae55" stroke-width="1.5"/>
+      <path d="M200 340 c-3-4-9-1-5 4 l5 4.5 5-4.5 c4-5-2-8-5-4 Z" fill="#d4ae55"/>
+      <!-- round white collar -->
+      <path d="M200 310 C188 330 166 330 158 312 C170 304 188 303 200 310 Z M200 310 C212 330 234 330 242 312 C230 304 212 303 200 310 Z" fill="var(--top)" stroke="var(--collar-line)" stroke-width="1.5" stroke-linejoin="round"/>
+      <g transform="translate(200 202) scale(1.08) translate(-200 -180)">
+      <!-- ears -->
+      <ellipse cx="131" cy="182" rx="9" ry="14" fill="var(--skin-shade)"/>
+      <ellipse cx="269" cy="182" rx="9" ry="14" fill="var(--skin-shade)"/>
+      <!-- face -->
+      <ellipse cx="200" cy="172" rx="70" ry="72" fill="var(--skin)"/>
+      <!-- hair & side-swept fringe -->
+      <path d="M128 186 C116 100 160 76 202 76 C246 76 288 100 272 186 C266 150 256 126 236 114 C214 104 186 104 164 114 C146 124 134 150 128 186 Z" fill="var(--hair)"/>
+      <path d="M136 156 C140 112 178 94 216 100 C246 105 266 124 270 158 C252 132 230 120 206 122 C188 124 170 134 156 146 C150 151 143 155 136 156 Z" fill="var(--hair)"/>
+      <path d="M176 104 C196 98 222 100 240 110" fill="none" stroke="var(--hair-light)" stroke-width="2.2" stroke-linecap="round" opacity=".6"/>
+      <!-- brows -->
+      <g fill="none" stroke="var(--hair)" stroke-width="3" stroke-linecap="round">
+        <path d="M160 150 Q173 143 186 149"/><path d="M214 149 Q227 143 240 150"/>
+      </g>
+      <!-- big eyes (blink + follow) -->
       <g class="eyes">
-        <ellipse cx="176" cy="180" rx="9" ry="6.5" fill="#fff"/>
-        <ellipse cx="224" cy="180" rx="9" ry="6.5" fill="#fff"/>
-        <g class="pupils" fill="#2b211e">
-          <circle cx="176" cy="180" r="4.6"/><circle cx="224" cy="180" r="4.6"/>
-          <circle cx="177.6" cy="178.4" r="1.3" fill="#fff"/><circle cx="225.6" cy="178.4" r="1.3" fill="#fff"/>
+        <ellipse cx="174" cy="182" rx="12" ry="13" fill="#fff"/>
+        <ellipse cx="226" cy="182" rx="12" ry="13" fill="#fff"/>
+        <g class="pupils">
+          <circle cx="174" cy="183" r="8" fill="#2b211e"/><circle cx="226" cy="183" r="8" fill="#2b211e"/>
+          <circle cx="177" cy="179" r="2.8" fill="#fff"/><circle cx="229" cy="179" r="2.8" fill="#fff"/>
+          <circle cx="171.5" cy="187" r="1.3" fill="#fff"/><circle cx="223.5" cy="187" r="1.3" fill="#fff"/>
+        </g>
+        <g fill="none" stroke="var(--hair)" stroke-width="2.6" stroke-linecap="round">
+          <path d="M161 178 Q174 165 187 178"/><path d="M213 178 Q226 165 239 178"/>
+          <path d="M162 176 l-5 -4 M238 176 l5 -4"/>
         </g>
       </g>
-      <!-- clear round glasses -->
-      <g fill="rgba(255,255,255,.14)" stroke="#a9a29a" stroke-width="2.6">
-        <rect x="153" y="164" width="45" height="35" rx="15"/><rect x="202" y="164" width="45" height="35" rx="15"/>
+      <!-- round glasses -->
+      <g fill="rgba(255,255,255,.12)" stroke="#b8b0a8" stroke-width="2.4">
+        <circle cx="174" cy="182" r="21"/><circle cx="226" cy="182" r="21"/>
       </g>
-      <path d="M198 178 Q200 174 202 178 M153 176 L141 178 M247 176 L259 178" fill="none" stroke="#a9a29a" stroke-width="2.4"/>
-      <!-- nose, cheeks, smile -->
-      <path d="M200 192 Q195 207 199 212 Q203 213 206 210" fill="none" stroke="var(--skin-line)" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="160" cy="214" r="11" fill="#e8908f" opacity=".22"/><circle cx="240" cy="214" r="11" fill="#e8908f" opacity=".22"/>
-      <path d="M185 228 Q200 240 215 228 Q200 234 185 228 Z" fill="#b5636b" stroke="#b5636b" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M195 180 Q200 175 205 180 M153 178 L132 175 M247 178 L268 175" fill="none" stroke="#b8b0a8" stroke-width="2.4" stroke-linecap="round"/>
+      <!-- tiny nose, rosy cheeks, smile -->
+      <path d="M197 203 Q200 207 203 203" fill="none" stroke="var(--skin-line)" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="150" cy="210" rx="13" ry="8" fill="#f28ea2" opacity=".38"/>
+      <ellipse cx="250" cy="210" rx="13" ry="8" fill="#f28ea2" opacity=".38"/>
+      <path d="M187 216 Q200 232 213 216 Q200 221 187 216 Z" fill="#c45a6c" stroke="#c45a6c" stroke-width="2" stroke-linejoin="round"/>
+      </g>
     </svg>`;
 
   function portraitHTML() {
@@ -221,9 +237,9 @@
     if (!pupils) return;
     const svg = pupils.ownerSVGElement.getBoundingClientRect();
     const scale = svg.width / 400;
-    const ex = svg.left + 200 * scale, ey = svg.top + 180 * scale;
+    const ex = svg.left + 200 * scale, ey = svg.top + 204 * scale;
     const dx = x - ex, dy = y - ey, d = Math.hypot(dx, dy) || 1;
-    const reach = Math.min(d / (120 * scale), 1) * 3.6;
+    const reach = Math.min(d / (120 * scale), 1) * 3.5;
     pupils.setAttribute("transform", `translate(${(dx / d * reach).toFixed(2)} ${(dy / d * reach * .7).toFixed(2)})`);
   }
 

@@ -1,5 +1,5 @@
 /*
-  SITE CONTENT — edit this file to update the website.
+  SITE CONTENT: edit this file to update the website.
   Every page reads from here, so you never need to touch the HTML.
 
   Entries marked `placeholder: true` show a dashed "placeholder" badge on the
@@ -9,24 +9,24 @@
 window.SITE = {
   person: {
     name: "Parvin Emami",
-    nameNative: "پروین امامی",
     role: "PhD researcher · University of Luxembourg",
     email: "parvin.emami@uni.lu",
     // Put your photo at this path. Until then a drawn monogram is shown.
     photo: "assets/img/portrait.jpg",
     statement: "Understanding people. Building systems that adapt.",
     intro:
-      "I work at the intersection of machine learning and human–computer interaction, studying how we look, think, and interact—and how intelligent systems can respond.",
+      "I work at the intersection of machine learning and human–computer interaction, studying how we look, think, and interact, and how intelligent systems can respond.",
     now: "PhD in the COIN team · SYMBIOTIK project",
     links: [
-      { label: "Google Scholar", url: "https://scholar.google.com/citations?hl=en&user=SHUgxekAAAAJ" },
-      { label: "GitHub", url: "https://github.com/prviin" },
-      { label: "LinkedIn", url: "https://www.linkedin.com/in/parvin-emami-207001144/" },
+      { label: "Google Scholar", icon: "scholar", url: "https://scholar.google.com/citations?hl=en&user=SHUgxekAAAAJ" },
+      { label: "GitHub", icon: "github", url: "https://github.com/prviin" },
+      { label: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/in/parvin-emami-207001144/" },
+      // Add your X/Twitter profile URL below; the icon appears once it is filled in.
+      { label: "X (Twitter)", icon: "x", url: "" },
     ],
     interests: [
       { label: "Eye tracking", page: "projects.html#workload" },
       { label: "Visual attention", page: "projects.html#scanpaths" },
-      { label: "EEG", page: "projects.html#workload" },
       { label: "Reinforcement learning", page: "projects.html#continual-rl" },
       { label: "Adaptive interfaces", page: "projects.html#adaptive-ui" },
       { label: "Affective computing", page: "projects.html#green-spaces" },
@@ -36,7 +36,7 @@ window.SITE = {
   // Newest first. `date` is shown as written ("2026", "Oct 2026", ...).
   news: [
     { date: "2026", tag: "Workshop", text: "<em>Is Forgetting Always Bad? Revisiting Replay in Continual Offline RL</em> will appear at WiML @ NeurIPS 2026.", weight: 2 },
-    { date: "2026", tag: "Paper", text: "<em>Pixels, Plants, and People</em>—affective evaluation of urban green spaces—published at CHI 2026.", link: "https://dl.acm.org/doi/full/10.1145/3772318.3791826", weight: 3 },
+    { date: "2026", tag: "Paper", text: "<em>Pixels, Plants, and People</em>, an affective evaluation of urban green spaces, published at CHI 2026.", link: "https://dl.acm.org/doi/full/10.1145/3772318.3791826", weight: 3 },
     { date: "2026", tag: "Teaching", text: "Teaching assistant for Human–Computer Interaction at the University of Luxembourg.", weight: 1 },
     { date: "2025", tag: "Visit", text: "Visiting researcher in Prof. Andreas Bulling's <a href=\"https://www.collaborative-ai.org\">Collaborative AI team</a>, University of Stuttgart.", weight: 2 },
     { date: "2025", tag: "Paper", text: "<em>A Comparative Study of Scanpath Models in Graph-Based Visualization</em> at ETRA 2025.", link: "https://dl.acm.org/doi/full/10.1145/3715669.3725882", weight: 2 },
@@ -102,7 +102,7 @@ window.SITE = {
     },
     {
       id: "continual-rl", tag: "Reinforcement learning", color: "sage",
-      question: "When should a system remember—or adapt?",
+      question: "When should a system remember, or adapt?",
       title: "Continual offline reinforcement learning",
       summary: "Investigating replay in continual offline reinforcement learning, and how learning changes as the quality of available data improves or degrades.",
       methods: ["Offline RL", "Continual learning", "Replay"],
@@ -110,7 +110,7 @@ window.SITE = {
     },
     {
       id: "adaptive-ui", tag: "Adaptive interfaces", color: "sand",
-      question: "When—and what—should an interface adapt?",
+      question: "When, and what, should an interface adapt?",
       title: "Real-time adaptive user interfaces",
       summary: "Studying the timing and content of adaptations in user interfaces that respond to their users in real time.",
       methods: ["HCI", "User modeling", "Decision making"],
@@ -135,8 +135,8 @@ window.SITE = {
       "I supervise Bachelor's and Master's projects, supporting students with experimental design, implementation, and quantitative evaluation.",
     topics: ["Reinforcement learning", "Computer vision", "Scanpath prediction", "Robotics", "LLM-based workload estimation"],
     students: [
-      { name: "Student name", level: "M.Sc.", year: "2025", project: "Project title — replace me", placeholder: true },
-      { name: "Student name", level: "B.Sc.", year: "2024", project: "Project title — replace me", placeholder: true },
+      { name: "Student name", level: "M.Sc.", year: "2025", project: "Project title, replace me", placeholder: true },
+      { name: "Student name", level: "B.Sc.", year: "2024", project: "Project title, replace me", placeholder: true },
     ],
   },
 

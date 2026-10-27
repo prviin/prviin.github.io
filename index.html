@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parvin Emami · Research</title>
+  <meta name="description" content="Parvin Emami — PhD researcher at the University of Luxembourg working on machine learning, visual attention, eye tracking and adaptive interactive systems.">
+  <meta property="og:title" content="Parvin Emami · Research">
+  <meta property="og:description" content="Parvin Emami — PhD researcher at the University of Luxembourg working on machine learning, visual attention, eye tracking and adaptive interactive systems.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Vazirmatn:wght@400;500&display=swap">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body data-page="home" id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+  <noscript><p class="wrap" style="padding:16px 0">This site uses JavaScript to display its content. Email: parvin.emami@uni.lu</p></noscript>
+  <main id="main">
+    <section class="hero" aria-label="Introduction">
+      <canvas id="gaze-canvas" aria-hidden="true"></canvas>
+      <div class="wrap hero-grid">
+        <div id="hero-copy"></div>
+        <figure class="portrait" id="portrait"></figure>
+      </div>
+      <p class="wrap gaze-hint" aria-hidden="true" style="position:absolute;left:0;right:0"><span class="fix"></span>Move your cursor slowly — this page tracks your gaze like an eye tracker would.</p>
+    </section>
+
+    <section class="block">
+      <div class="wrap">
+        <div class="block-head">
+          <div><p class="eyebrow"><span class="fix" aria-hidden="true"></span>01 / Research</p><h2>Questions I'm <em>exploring.</em></h2></div>
+          <a class="arrow-link" href="projects.html">All projects →</a>
+        </div>
+        <div class="grid-3" id="home-projects"></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="wrap grid-2" style="gap:clamp(32px,6vw,80px)">
+        <div>
+          <div class="block-head">
+            <div><p class="eyebrow"><span class="fix" aria-hidden="true"></span>02 / News</p><h2>Lately.</h2></div>
+            <a class="arrow-link" href="news.html">All news →</a>
+          </div>
+          <ul class="news-mini" id="home-news"></ul>
+        </div>
+        <div>
+          <div class="block-head">
+            <div><p class="eyebrow"><span class="fix" aria-hidden="true"></span>03 / Publications</p><h2>Selected work.</h2></div>
+            <a class="arrow-link" href="publications.html">All papers →</a>
+          </div>
+          <div id="home-pubs"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <section id="contact" aria-label="Contact"></section>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

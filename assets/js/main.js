@@ -299,9 +299,11 @@
     hero.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "mouse" || source === "camera") return;
       const now = performance.now();
+      // First tap: clear the synthetic path so the scanpath is only the visitor's taps.
+      if (!touchUntil) { fixations.length = 0; current = null; }
       sample(e.clientX, e.clientY);
       fixate(target.x, target.y, now, 1);
-      touchUntil = now + 4000;
+      touchUntil = now + 12000; // the auto path resumes after 12 s without taps
     }, { passive: true });
 
     // Synthetic scanpath: jump between random points with human-ish dwell times
@@ -379,7 +381,9 @@
     const btn = $("#eyetrack-btn");
     if (!btn || !gaze || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { if (btn) btn.hidden = true; return; }
 
-    let running = false, calibrated = false, smooth = null, used = false;
+    let running = false, calibrated = false, smooth = null, used = false, probe = null;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const TAPS = coarse ? 5 : 3; // phones need more calibration samples
 
     function overlay(html) {
       const el = document.createElement("div");
@@ -409,8 +413,8 @@
           <p>This uses your camera to estimate where you look, the way eye-tracking research does, just much less precisely.</p>
           <ul>
             <li>Everything runs in your browser. Video never leaves your device and nothing is saved. (The face model, about 10 MB, is downloaded once from a public CDN.)</li>
-            <li>First a short calibration: look at each dot and click or tap it 3 times.</li>
-            <li>Works best on a laptop, with your face well lit.</li>
+            <li>First a short calibration: look at each dot and click or tap it ${TAPS} times.</li>
+            <li>Works best on a laptop, with your face well lit.${coarse ? " On a phone, rest it on a table and keep your head still: moving the phone breaks the calibration." : ""}</li>
           </ul>
           <div class="cta-row"><button class="btn" data-et="start">Turn on camera</button><button class="btn ghost" data-et="cancel">Not now</button></div>
         </div>`);
@@ -435,12 +439,15 @@
         const wg = window.webgazer;
         wg.saveDataAcrossSessions(false);
         wg.params.showVideoPreview = true;
-        wg.params.videoViewerWidth = 240;
-        wg.params.videoViewerHeight = 180;
+        const small = innerHeight < 760 || innerWidth < 400;
+        wg.params.videoViewerWidth = small ? 160 : 240;
+        wg.params.videoViewerHeight = small ? 120 : 180;
         wg.params.faceMeshSolutionPath = WEBGAZER_BASE + "/mediapipe/face_mesh";
         await wg.setRegression("ridge")
           .setGazeListener((data) => {
-            if (!data || !calibrated || !running) return;
+            if (!data || !running) return;
+            if (probe) probe.push(data);
+            if (!calibrated) return;
             smooth = smooth ? { x: smooth.x * 0.8 + data.x * 0.2, y: smooth.y * 0.8 + data.y * 0.2 } : { x: data.x, y: data.y };
             gaze.cameraSample(smooth.x, smooth.y);
           })
@@ -455,10 +462,13 @@
     }
 
     function calibrate() {
-      // Dots avoid the camera preview, which sits at the top centre.
-      const spots = [[8, 10], [92, 10], [8, 38], [50, 38], [92, 38], [8, 64], [50, 64], [92, 64], [8, 90], [50, 90], [92, 90]];
+      // Dots avoid the camera preview (top centre, 64px down) and the instructions below it.
+      const below = 64 + window.webgazer.params.videoViewerHeight;
+      const first = ((below + 70) / innerHeight) * 100;
+      const rows = [first, (first + 90) / 2, 90];
+      const spots = [[8, 10], [92, 10], ...rows.flatMap((y) => [[8, y], [50, y], [92, y]])];
       const cal = overlay(`
-        <p class="et-instructions"><span>Look at each dot and click it <strong>3 times</strong>.</span> <button class="pill" data-et="cancel">Cancel</button></p>
+        <p class="et-instructions" style="top:${below + 16}px"><span>Look at each dot and ${coarse ? "tap" : "click"} it <strong>${TAPS} times</strong>.</span> <button class="pill" data-et="cancel">Cancel</button></p>
         ${spots.map(([x, y], i) => `<button class="et-dot" style="left:${x}%;top:${y}%" data-hits="0" aria-label="Calibration point ${i + 1}"></button>`).join("")}`);
       cal.classList.add("calibrating");
       let done = 0;
@@ -468,24 +478,54 @@
         if (!dot || dot.disabled) return;
         const hits = +dot.dataset.hits + 1;
         dot.dataset.hits = hits;
-        dot.style.setProperty("--fill", hits / 3);
-        if (hits >= 3) { dot.disabled = true; done++; }
+        dot.style.setProperty("--fill", hits / TAPS);
+        if (hits >= TAPS) { dot.disabled = true; done++; }
         if (done === spots.length) finish(cal);
       });
     }
 
     function finish(cal) {
       cal.remove();
-      calibrated = true;
-      const wg = window.webgazer;
-      wg.showVideoPreview(false).showFaceOverlay(false).showFaceFeedbackBox(false);
-      gaze.setCamera(true);
+      window.webgazer.showVideoPreview(false).showFaceOverlay(false).showFaceFeedbackBox(false);
+      checkAccuracy();
+    }
+
+    // Shows one target for a few seconds and measures how far the estimates land from it.
+    function checkAccuracy() {
+      const chk = overlay(`<p class="et-instructions"><span>Keep looking at the dot…</span></p><span class="et-dot et-target" style="left:50%;top:50%"></span>`);
+      chk.classList.add("calibrating");
+      setTimeout(() => { probe = []; }, 800); // ignore the eye's jump to the target
+      setTimeout(() => {
+        const cx = innerWidth / 2, cy = innerHeight / 2;
+        const errs = (probe || []).map((d) => Math.hypot(d.x - cx, d.y - cy)).sort((a, b) => a - b);
+        probe = null;
+        chk.remove();
+        if (!running) return;
+        const err = errs.length ? Math.round(errs[errs.length >> 1]) : null;
+        const rough = err === null || err > Math.min(innerWidth, innerHeight) * 0.25;
+        calibrated = true;
+        smooth = null;
+        gaze.setCamera(true);
+        showStatus(err, rough);
+        toast(rough ? "Tracking is rough. Try Recalibrate, keeping still" : "Calibrated. Now just look around");
+      }, 2800);
+    }
+
+    function showStatus(err, rough) {
+      document.querySelectorAll(".et-status").forEach((el) => el.remove());
       const status = document.createElement("div");
       status.className = "et-status";
-      status.innerHTML = `<span class="rec" aria-hidden="true"></span>Eye tracking on <button class="pill" data-et="stop">Stop camera</button>`;
+      status.innerHTML = `<span class="rec" aria-hidden="true"></span><span>Eye tracking on${err === null ? "" : ` <span class="${rough ? "et-rough" : "muted"}">±${err}px</span>`}</span>
+        <button class="pill" data-et="recal">Recalibrate</button><button class="pill" data-et="stop">Stop</button>`;
       document.body.appendChild(status);
       $("[data-et=stop]", status).addEventListener("click", stop);
-      toast("Calibrated. Now just look around");
+      $("[data-et=recal]", status).addEventListener("click", () => {
+        status.remove();
+        calibrated = false;
+        gaze.setCamera(false);
+        window.webgazer.showVideoPreview(true).showFaceOverlay(true).showFaceFeedbackBox(true);
+        calibrate();
+      });
     }
 
     btn.addEventListener("click", consent);

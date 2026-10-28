@@ -243,8 +243,7 @@
   // Draws fixations (circles that grow while the gaze dwells) joined by
   // saccades (lines), like an eye-tracking scanpath. The gaze comes from one of:
   //   mouse  - the cursor (desktop)
-  //   touch  - a tap places a fixation; the auto path resumes a few seconds later
-  //   auto   - a synthetic scanpath when there is no mouse
+  //   touch  - each tap places a fixation
   //   camera - real webcam eye tracking (WebGazer), after calibration
   function startGaze(canvas) {
     const ctx = canvas.getContext("2d");
@@ -254,8 +253,10 @@
     let current = null;
     const MAX = 9;
     const hasMouse = window.matchMedia("(hover: hover)").matches;
-    let source = hasMouse ? "mouse" : "auto";
-    let target = null, lastMove = 0, touchUntil = 0;
+    let source = hasMouse ? "mouse" : "touch";
+    let target = null, lastMove = 0;
+    const hint = document.querySelector(".gaze-hint");
+    if (!hasMouse && hint) hint.lastChild.textContent = "Tap anywhere here, each tap becomes a fixation like in an eye tracker.";
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -298,27 +299,14 @@
 
     hero.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "mouse" || source === "camera") return;
-      const now = performance.now();
-      // First tap: clear the synthetic path so the scanpath is only the visitor's taps.
-      if (!touchUntil) { fixations.length = 0; current = null; }
+      source = "touch";
       sample(e.clientX, e.clientY);
-      fixate(target.x, target.y, now, 1);
-      touchUntil = now + 12000; // the auto path resumes after 12 s without taps
+      fixate(target.x, target.y, performance.now(), 1);
     }, { passive: true });
-
-    // Synthetic scanpath: jump between random points with human-ish dwell times
-    let nextJump = 0;
-    function autoStep(now) {
-      if (now < nextJump) return;
-      fixate(w * (0.08 + Math.random() * 0.84), h * (0.12 + Math.random() * 0.76), now);
-      nextJump = now + 450 + Math.random() * 900;
-    }
 
     function frame(now) {
       if (source === "camera") { if (target) fixate(target.x, target.y, now, 80); }
-      else if (now < touchUntil) { /* hold the tapped fixation */ }
       else if (source === "mouse") { if (target && now - lastMove > 90) fixate(target.x, target.y, now); }
-      else autoStep(now);
 
       if (current) current.r = Math.min(4 + (now - current.start) / 28, 46);
 
@@ -355,7 +343,7 @@
       // Smoothed webcam gaze estimates arrive here while camera mode is on.
       cameraSample(x, y) { lookAt(x, y); sample(x, y); },
       setCamera(on) {
-        source = on ? "camera" : hasMouse ? "mouse" : "auto";
+        source = on ? "camera" : hasMouse ? "mouse" : "touch";
         target = null;
       },
     };

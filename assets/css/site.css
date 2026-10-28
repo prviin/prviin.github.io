@@ -420,7 +420,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); color: in
   .portrait { order: -1; width: min(220px, 62%); justify-self: start; margin: 22px 0 0 22px; }
   .portrait-tag { left: auto; right: -40px; bottom: 2%; max-width: 200px; }
   .eyetrack-btn { margin-left: 0; }
-  .gaze-hint { display: none; }
+  .gaze-hint { position: static !important; margin-top: 18px; }
   .grid-2 { grid-template-columns: 1fr; }
   .year-group { grid-template-columns: 1fr; gap: 6px; }
   .year-group .yr { position: static; font-size: 1.8rem; }

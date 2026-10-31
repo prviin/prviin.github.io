@@ -25,6 +25,7 @@
   const MORE_NAV = [
     { href: "teaching.html", label: "Teaching", note: "Courses & students", id: "teaching" },
     { href: "books.html", label: "Books", note: "My bookshelf", id: "books" },
+    { href: "personal.html", label: "Personal projects", note: "Things I build", id: "personal" },
     { href: "activities.html", label: "Activities", note: "Visits, talks, life", id: "activities" },
     { href: "cv.html", label: "CV", note: "Experience & education", id: "cv" },
   ];
@@ -591,6 +592,24 @@
           ${deco}
         </article>`;
       }).join("");
+    },
+
+    personal() {
+      $("#personal-list").innerHTML = S.personalProjects.map((p, i) => `
+        <article class="project ${p.color} reveal" id="${p.id}">
+          <span class="num">0${i + 1}</span>
+          <div>
+            <p class="tag">${esc(p.tag)}</p>
+            <h2>${esc(p.title)}</h2>
+            <p class="sub">${esc(p.tagline)}</p>
+            <div class="cta-row"><a class="btn" href="${esc(p.url)}">View on GitHub <span aria-hidden="true">↗</span></a></div>
+          </div>
+          <div class="body">
+            ${p.image ? `<img class="project-shot" src="${esc(p.image)}" alt="${esc(p.imageAlt || "")}" loading="lazy">` : ""}
+            <p>${esc(p.summary)}</p>
+            <div class="methods">${p.features.map((m) => `<span>${esc(m)}</span>`).join("")}</div>
+          </div>
+        </article>`).join("");
     },
 
     publications() {

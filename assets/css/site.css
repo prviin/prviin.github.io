@@ -256,6 +256,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); color: in
 .status { display: inline-flex; gap: 8px; align-items: center; font: 11px var(--mono); margin-top: 18px; }
 .related { margin-top: 20px; border-top: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); padding-top: 14px; }
 .related li { font-size: 14px; margin-top: 6px; }
+.project-shot { width: min(180px, 50%); border-radius: 22px; margin-bottom: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
 .project svg.deco { position: absolute; right: -40px; bottom: -40px; width: 220px; opacity: .35; pointer-events: none; }
 
 /* ---------- Publications ---------- */

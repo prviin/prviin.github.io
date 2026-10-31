@@ -125,6 +125,20 @@ window.SITE = {
     { status: "WiML @ NeurIPS 2026", title: "Is Forgetting Always Bad? Revisiting Replay in Continual Offline RL", topics: ["Reinforcement learning"] },
   ],
 
+  // Things built outside research (More > Personal projects)
+  personalProjects: [
+    {
+      id: "bite-by-bite", tag: "iPhone + web app", color: "sage",
+      title: "Bite by Bite",
+      tagline: "A personal food journal for calories, protein, fiber and more.",
+      summary: "I built Bite by Bite to make everyday food tracking easier. Take a photo of a meal, add a note like \"I only ate half\", and it estimates calories, protein, fiber and other nutrients for you to check before saving. It also tracks activity, water and supplements, with daily, weekly and monthly progress. It runs natively on iPhone, with a web version too.",
+      features: ["Swift", "Node.js", "Photo estimates", "Nutrition", "Activity & water", "Supplements"],
+      url: "https://github.com/prviin/bite-by-bite",
+      image: "https://raw.githubusercontent.com/prviin/bite-by-bite/HEAD/docs/images/iphone.png",
+      imageAlt: "Bite by Bite on iPhone, showing the daily calorie balance",
+    },
+  ],
+
   projects: [
     {
       id: "workload", tag: "Eye tracking + EEG", color: "plum",

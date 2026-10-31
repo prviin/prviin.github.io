@@ -12,6 +12,7 @@ A multi-page static site with no build step. It works on GitHub Pages as-is.
 | News | News as a "scanpath" timeline (bigger circle = bigger news) | `news.html` |
 | More ▸ Teaching | Courses, supervision topics, students table | `teaching.html` |
 | More ▸ Books | Interactive bookshelf | `books.html` |
+| More ▸ Personal projects | Side projects such as Bite by Bite (edit `personalProjects` in data.js) | `personal.html` |
 | More ▸ Activities | Research visits, talks, languages, recognition, service, hobbies | `activities.html` |
 | More ▸ CV | Timeline + PDF download | `cv.html` |
 

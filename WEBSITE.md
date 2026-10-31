@@ -56,6 +56,9 @@ Create a public repo `prviin.github.io`, upload everything in this folder (inclu
 
 ## Notes
 
+- After changing `site.css`, `data.js` or `main.js`, bump the `?v=` number on their links in every `.html` file, otherwise browsers (especially Safari) may keep the old copy:
+  `sed -i -E "s#(assets/(css/site\.css|js/data\.js|js/main\.js))(\?v=[0-9]+)?\"#\1?v=$(date +%Y%m%d%H%M)\"#g" *.html`
+
 - The previous single-page version is kept in `parvin-emami-website.zip`.
 - Fonts: Fraunces, Inter, JetBrains Mono, Vazirmatn (for Persian) from Google Fonts. The site falls back to system fonts offline.
 - Respects `prefers-reduced-motion`: the gaze animation and reveals are disabled.
